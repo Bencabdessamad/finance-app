@@ -790,7 +790,7 @@
         <!-- Header -->
         <header class="app-header">
             <div class="header-content">
-                <h1 class="app-title">Finance Home</h1>
+                <h1 class="app-title">FinanceHome</h1>
             </div>
         </header>
 
@@ -814,18 +814,11 @@
         <div class="content-section active" id="dashboard-section">
             <!-- Quick Stats -->
             <div class="quick-stats">
-                <div class="stat-card">
+                <div class="stat-card" style="grid-column: 1 / -1;">
                     <div class="stat-label">Ce mois</div>
                     <div class="stat-value" id="currentMonthBalance">0 DH</div>
                     <div class="stat-change" id="monthChange">
                         <span>↑</span> 0%
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Moyenne mensuelle</div>
-                    <div class="stat-value" id="avgMonthly">0 DH</div>
-                    <div class="stat-change">
-                        <span>~</span> Derniers 6 mois
                     </div>
                 </div>
             </div>
@@ -1168,11 +1161,6 @@
             const monthBalance = monthIncome - monthExpenses;
             
             document.getElementById('currentMonthBalance').textContent = formatCurrency(monthBalance);
-            
-            // Average monthly balance
-            const monthlyBalances = getMonthlyBalances(transactions, 6);
-            const avgBalance = monthlyBalances.reduce((sum, b) => sum + b.balance, 0) / monthlyBalances.length || 0;
-            document.getElementById('avgMonthly').textContent = formatCurrency(avgBalance);
             
             // Load recent transactions
             const recent = transactions.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
