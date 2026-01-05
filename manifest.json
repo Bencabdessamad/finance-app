@@ -1,0 +1,32 @@
+{
+  "name": "FinanceHome - Gestion Financière",
+  "short_name": "FinanceHome",
+  "description": "Application de gestion financière domestique avec suivi des revenus et dépenses",
+  "start_url": "/finance-app.html",
+  "display": "standalone",
+  "background_color": "#0A0E27",
+  "theme_color": "#0A0E27",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity"],
+  "screenshots": [
+    {
+      "src": "screenshot.png",
+      "sizes": "1170x2532",
+      "type": "image/png"
+    }
+  ]
+}
