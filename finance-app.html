@@ -269,6 +269,104 @@
             color: var(--danger);
         }
         
+        .stat-description {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* Budget 50/30/20 Card */
+        .budget-rule-card {
+            margin: 0 20px 24px;
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+        }
+        
+        .budget-rule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .budget-rule-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .budget-rule-info {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--surface-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .budget-rule-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .budget-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .budget-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .budget-bar-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .budget-bar-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .budget-bar-track {
+            height: 8px;
+            background: var(--surface-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .budget-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .budget-bar-fill.needs {
+            background: linear-gradient(90deg, #FF6B93, #FF8FA3);
+        }
+        
+        .budget-bar-fill.wants {
+            background: linear-gradient(90deg, #6C63FF, #8B85FF);
+        }
+        
+        .budget-bar-fill.savings {
+            background: linear-gradient(90deg, #00D9A3, #00F5BD);
+        }
+        
+        .budget-bar-percentage {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
         /* Charts */
         .chart-container {
             margin: 0 20px 24px;
@@ -815,10 +913,60 @@
             <!-- Quick Stats -->
             <div class="quick-stats">
                 <div class="stat-card" style="grid-column: 1 / -1;">
-                    <div class="stat-label">Ce mois</div>
+                    <div class="stat-label">Solde ce mois</div>
                     <div class="stat-value" id="currentMonthBalance">0 DH</div>
                     <div class="stat-change" id="monthChange">
                         <span>↑</span> 0%
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Taux d'épargne</div>
+                    <div class="stat-value" id="savingsRate">0%</div>
+                    <div class="stat-description">De vos revenus</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Prévision fin mois</div>
+                    <div class="stat-value" id="forecastBalance">0 DH</div>
+                    <div class="stat-description">Estimation</div>
+                </div>
+            </div>
+
+            <!-- Budget 50/30/20 Card -->
+            <div class="budget-rule-card">
+                <div class="budget-rule-header">
+                    <div class="budget-rule-title">Répartition Budget (50/30/20)</div>
+                    <div class="budget-rule-info" onclick="openInfoModal()">ⓘ</div>
+                </div>
+                <div class="budget-rule-bars">
+                    <div class="budget-bar">
+                        <div class="budget-bar-header">
+                            <span class="budget-bar-label">🏠 Besoins (50%)</span>
+                            <span class="budget-bar-value" id="needsAmount">0 DH</span>
+                        </div>
+                        <div class="budget-bar-track">
+                            <div class="budget-bar-fill needs" id="needsBar" style="width: 0%"></div>
+                        </div>
+                        <div class="budget-bar-percentage" id="needsPercentage">0% utilisé</div>
+                    </div>
+                    <div class="budget-bar">
+                        <div class="budget-bar-header">
+                            <span class="budget-bar-label">🎉 Envies (30%)</span>
+                            <span class="budget-bar-value" id="wantsAmount">0 DH</span>
+                        </div>
+                        <div class="budget-bar-track">
+                            <div class="budget-bar-fill wants" id="wantsBar" style="width: 0%"></div>
+                        </div>
+                        <div class="budget-bar-percentage" id="wantsPercentage">0% utilisé</div>
+                    </div>
+                    <div class="budget-bar">
+                        <div class="budget-bar-header">
+                            <span class="budget-bar-label">💰 Épargne (20%)</span>
+                            <span class="budget-bar-value" id="savingsAmount">0 DH</span>
+                        </div>
+                        <div class="budget-bar-track">
+                            <div class="budget-bar-fill savings" id="savingsBar" style="width: 0%"></div>
+                        </div>
+                        <div class="budget-bar-percentage" id="savingsPercentage">0% économisé</div>
                     </div>
                 </div>
             </div>
@@ -954,6 +1102,35 @@
         </div>
     </div>
 
+    <!-- Info Modal 50/30/20 -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <div class="modal-title">Règle 50/30/20</div>
+                <div class="close-btn" onclick="closeModal('infoModal')">×</div>
+            </div>
+            
+            <div style="line-height: 1.6; color: var(--text-secondary);">
+                <p style="margin-bottom: 16px;">La règle <strong style="color: var(--text-primary);">50/30/20</strong> est une méthode simple pour gérer votre budget :</p>
+                
+                <div style="margin-bottom: 16px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">
+                    <div style="color: #FF6B93; font-weight: 600; margin-bottom: 8px;">🏠 50% - Besoins</div>
+                    <div style="font-size: 14px;">Dépenses essentielles : loyer, factures, alimentation, transport, assurances.</div>
+                </div>
+                
+                <div style="margin-bottom: 16px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">
+                    <div style="color: #6C63FF; font-weight: 600; margin-bottom: 8px;">🎉 30% - Envies</div>
+                    <div style="font-size: 14px;">Plaisirs et loisirs : restaurants, sorties, shopping, divertissements.</div>
+                </div>
+                
+                <div style="padding: 16px; background: var(--surface-elevated); border-radius: 12px;">
+                    <div style="color: #00D9A3; font-weight: 600; margin-bottom: 8px;">💰 20% - Épargne</div>
+                    <div style="font-size: 14px;">Économies et investissements pour vos projets futurs.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Initialize Dexie Database
         const db = new Dexie('FinanceHomeDB');
@@ -962,7 +1139,7 @@
             transactions: '++id, type, amount, category, description, date, createdAt'
         });
 
-        // Categories
+        // Categories with 50/30/20 classification
         const categories = {
             income: [
                 'Salaire Principal',
@@ -995,6 +1172,13 @@
                 'Zakat/Sadaqa',
                 'Autres Dépenses'
             ]
+        };
+
+        // Classification 50/30/20
+        const budgetClassification = {
+            needs: ['Loyer', 'LYDEC/RADEEMA', 'Électricité', 'Eau', 'Internet/Téléphone', 'Gaz Butane', 'Alimentation', 'Transport', 'Carburant', 'Assurances', 'Santé/CNSS'],
+            wants: ['Éducation', 'Hammam/Coiffeur', 'Loisirs', 'Cafés/Restaurants', 'Shopping', 'Zakat/Sadaqa'],
+            savings: [] // Calculated as income - expenses
         };
 
         // Icons mapping - Utilisation d'initiales au lieu d'emojis
@@ -1088,6 +1272,10 @@
             document.getElementById('addTransactionModal').classList.add('active');
         }
 
+        function openInfoModal() {
+            document.getElementById('infoModal').classList.add('active');
+        }
+
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
             document.getElementById('transactionForm').reset();
@@ -1161,6 +1349,21 @@
             const monthBalance = monthIncome - monthExpenses;
             
             document.getElementById('currentMonthBalance').textContent = formatCurrency(monthBalance);
+            
+            // Calculate savings rate
+            const savingsRate = monthIncome > 0 ? ((monthBalance / monthIncome) * 100).toFixed(1) : 0;
+            document.getElementById('savingsRate').textContent = savingsRate + '%';
+            
+            // Calculate forecast for end of month
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const currentDay = now.getDate();
+            const avgDailyExpenses = monthExpenses / currentDay;
+            const projectedExpenses = avgDailyExpenses * daysInMonth;
+            const forecastBalance = monthIncome - projectedExpenses;
+            document.getElementById('forecastBalance').textContent = formatCurrency(forecastBalance);
+            
+            // Calculate 50/30/20 budget
+            calculate503020Budget(monthTransactions, monthIncome);
             
             // Load recent transactions
             const recent = transactions.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
@@ -1413,6 +1616,47 @@
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function calculate503020Budget(transactions, income) {
+            // Calculate actual spending in each category
+            const needsExpenses = transactions
+                .filter(t => t.type === 'expense' && budgetClassification.needs.includes(t.category))
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const wantsExpenses = transactions
+                .filter(t => t.type === 'expense' && budgetClassification.wants.includes(t.category))
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const actualSavings = income - needsExpenses - wantsExpenses;
+            
+            // Ideal allocations based on 50/30/20 rule
+            const idealNeeds = income * 0.5;
+            const idealWants = income * 0.3;
+            const idealSavings = income * 0.2;
+            
+            // Calculate percentages
+            const needsPercentage = income > 0 ? Math.min((needsExpenses / idealNeeds) * 100, 100) : 0;
+            const wantsPercentage = income > 0 ? Math.min((wantsExpenses / idealWants) * 100, 100) : 0;
+            const savingsPercentage = income > 0 ? Math.min((actualSavings / idealSavings) * 100, 100) : 0;
+            
+            // Update UI - Needs
+            document.getElementById('needsAmount').textContent = formatCurrency(needsExpenses);
+            document.getElementById('needsBar').style.width = needsPercentage + '%';
+            document.getElementById('needsPercentage').textContent = 
+                `${(income > 0 ? (needsExpenses / income * 100).toFixed(0) : 0)}% de vos revenus`;
+            
+            // Update UI - Wants
+            document.getElementById('wantsAmount').textContent = formatCurrency(wantsExpenses);
+            document.getElementById('wantsBar').style.width = wantsPercentage + '%';
+            document.getElementById('wantsPercentage').textContent = 
+                `${(income > 0 ? (wantsExpenses / income * 100).toFixed(0) : 0)}% de vos revenus`;
+            
+            // Update UI - Savings
+            document.getElementById('savingsAmount').textContent = formatCurrency(actualSavings);
+            document.getElementById('savingsBar').style.width = Math.max(0, savingsPercentage) + '%';
+            document.getElementById('savingsPercentage').textContent = 
+                `${(income > 0 ? Math.max(0, (actualSavings / income * 100)).toFixed(0) : 0)}% économisé`;
         }
     </script>
 </body>
